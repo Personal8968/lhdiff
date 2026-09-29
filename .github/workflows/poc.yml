@@ -1,27 +1,19 @@
-name:  PoC
+name: Artifact PoC
 
-on: [push, workflow_dispatch]
+on:
+  workflow_dispatch:
 
 jobs:
-  exploit:
+  poc:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Prepare exploit zip
+      - name: Create controlled artifact
         run: |
-          echo "You got hacked" > poc.txt
-          zip -q -r evil.zip poc.txt --junk-paths
-      - name: Upload malicious artifact
-        uses: actions/upload-artifact@v4
+          mkdir -p artifact
+          echo "ARTIFACT_EXTRACTION_POC" > artifact/marker.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
         with:
-          name: exploit
-          path: evil.zip
-
-      - name: Simulate extraction
-        run: |
-          mkdir extracted
-          unzip evil.zip -d extracted
-          echo "::notice file=/tmp/pwned.txt::File content:"
-          cat /tmp/pwned.txt || echo "File not written"
+          name: repository
+          path: artifact
